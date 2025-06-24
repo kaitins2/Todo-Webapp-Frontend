@@ -13,7 +13,6 @@ const LoginPage = () => {
     e.preventDefault();
 
     try {
-      // LoginPage.jsx
         const response = await axios.post('https://localhost:7240/api/auth/login', {
         username,
         password,
