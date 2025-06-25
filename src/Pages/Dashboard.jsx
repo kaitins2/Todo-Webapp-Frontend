@@ -1,6 +1,7 @@
 // Dashboard.jsx
 import React from 'react';
 import './Dashboard.css';
+import { Link } from 'react-router-dom';
 
 const Dashboard = () => {
   return (
@@ -10,6 +11,8 @@ const Dashboard = () => {
         <nav>
           <ul>
             <li>Home</li>
+            <li><Link to={"/tasks"}>Tasks</Link></li>
+            <li>Habits</li>
             <li>Profile</li>
             <li>Settings</li>
             <li>Logout</li>
