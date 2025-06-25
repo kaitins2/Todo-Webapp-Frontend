@@ -1,14 +1,9 @@
 .tasks-container {
-  display: flex; /* This is key */
+  display: flex;
   height: 100vh;
-  margin: 0; /* Remove auto-centering if you’re using full height layout */
+  margin: 0;
   padding: 0;
   background: #f9f9f9;
-}
-
-.main-content {
-  flex: 1;
-  padding: 2rem;
 }
 
 .sidebar {
@@ -36,6 +31,11 @@
   text-decoration: underline;
 }
 
+.main-content {
+  flex: 1;
+  padding: 2rem;
+}
+
 .add-task-form {
   display: flex;
   flex-direction: column;
@@ -43,28 +43,25 @@
   margin-bottom: 1rem;
 }
 
-
 .tasks-container .MuiTextField-root {
   flex: 1;
 }
 
-.tasks-container .MuiButton-root {
-  white-space: nowrap;
+/* Hover effect for icon buttons */
+.MuiIconButton-root:hover {
+  border-radius: 10px;
+  background-color: rgba(0, 0, 0, 0.1);
 }
 
-.done .MuiListItemText-root {
-  text-decoration: line-through;
-  color: #888;
-}
-.task-text .MuiTypography-root {
-  color: #333;
-}
-
+/* Styling for done tasks */
 .done-text {
   color: #888;
   text-decoration: line-through;
 }
 
-.MuiIconButton-root:hover {
-  border-radius:  10px;
+/* Flex container for task action icons (edit/delete/save/cancel) */
+.task-actions {
+  display: flex;
+  gap: 0.5rem; /* space between icons */
+  align-items: center;
 }

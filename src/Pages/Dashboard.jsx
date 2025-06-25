@@ -1,7 +1,7 @@
 // Dashboard.jsx
-import React from 'react';
-import './Dashboard.css';
-import { Link } from 'react-router-dom';
+import React from "react";
+import "./Dashboard.css";
+import { Link } from "react-router-dom";
 
 const Dashboard = () => {
   return (
@@ -11,7 +11,9 @@ const Dashboard = () => {
         <nav>
           <ul>
             <li>Home</li>
-            <li><Link to={"/tasks"}>Tasks</Link></li>
+            <li>
+              <Link to={"/tasks"}>Tasks</Link>
+            </li>
             <li>Habits</li>
             <li>Profile</li>
             <li>Settings</li>
@@ -20,8 +22,11 @@ const Dashboard = () => {
         </nav>
       </aside>
       <main className="main-content">
-        <h1 className='title'>Welcome to the Dashboard</h1>
-        <p className='title'>This is your main area. You can put charts, tables, or anything else here.</p>
+        <h1 className="title">Welcome to the Dashboard</h1>
+        <p className="title">
+          This is your main area. You can put charts, tables, or anything else
+          here.
+        </p>
       </main>
     </div>
   );
