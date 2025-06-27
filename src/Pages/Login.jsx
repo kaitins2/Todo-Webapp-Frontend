@@ -4,7 +4,7 @@ import axios from "axios";
 import "./Login.css";
 
 const LoginPage = () => {
-  const API_URL = process.env.REACT_APP_API_URL;
+  const API_URL = import.meta.env.VITE_API_URL;
   const navigate = useNavigate();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");

@@ -4,7 +4,7 @@ import axios from "axios";
 import "./Login.css";
 
 const RegisterPage = () => {
-  const API_URL = process.env.REACT_APP_API_URL;
+  const API_URL = import.meta.env.VITE_API_URL;
   const navigate = useNavigate();
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
@@ -39,7 +39,7 @@ const RegisterPage = () => {
 
   return (
     <div className="login-container">
-      <form className="login-form">
+      <form className="login-form" onSubmit={handleSubmit}>
         <h2>Register</h2>
         {error && <p style={{ color: "red" }}>{error}</p>}
         <input
