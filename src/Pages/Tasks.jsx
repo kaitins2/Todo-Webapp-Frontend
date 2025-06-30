@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Box,
   TextField,
@@ -13,55 +13,141 @@ import { Link } from "react-router-dom";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AddIcon from "@mui/icons-material/Add";
 import EditIcon from "@mui/icons-material/Edit";
+import SaveIcon from "@mui/icons-material/Save";
+import CancelIcon from "@mui/icons-material/Cancel";
 import "./Tasks.css";
+import axios from "axios";
 
 const Tasks = () => {
+  const API_URL = import.meta.env.VITE_API_URL;
   const [tasks, setTasks] = useState([]);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [isEditing, setIsEditing] = useState(null); // task.id or null
+  const [isEditing, setIsEditing] = useState(null);
   const [editValues, setEditValues] = useState({ title: "", description: "" });
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  // Fetch tasks from backend
+  useEffect(() => {
+    const fetchTasks = async () => {
+      try {
+        const response = await axios.get(`${API_URL}/api/todo`, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        });
+        setTasks(response.data);
+      } catch (err) {
+        setError("Failed to fetch tasks");
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchTasks();
+  }, [API_URL]);
 
   const startEdit = (task) => {
     setIsEditing(task.id);
-    setEditValues({ title: task.title, description: task.description });
+    setEditValues({
+      title: task.title,
+      description: task.description || "",
+    });
   };
 
-  const saveEdit = (id) => {
-    setTasks(tasks.map((t) => (t.id === id ? { ...t, ...editValues } : t)));
-    setIsEditing(null);
+  const saveEdit = async (id) => {
+    try {
+      const response = await axios.put(
+        `${API_URL}/api/todo/${id}`,
+        {
+          title: editValues.title,
+          description: editValues.description,
+          isCompleted: tasks.find((t) => t.id === id).isCompleted,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+      setTasks(tasks.map((t) => (t.id === id ? response.data : t)));
+      setIsEditing(null);
+    } catch (err) {
+      setError("Failed to update task");
+      console.error(err);
+    }
   };
 
   const cancelEdit = () => {
     setIsEditing(null);
   };
 
-  const addTask = () => {
+  const addTask = async () => {
     const trimmedTitle = title.trim();
-    const trimmedDesc = description.trim();
-    if (!trimmedTitle && !trimmedDesc) return;
+    if (!trimmedTitle) return;
 
-    setTasks([
-      ...tasks,
-      {
-        id: Date.now(),
-        title: trimmedTitle,
-        description: trimmedDesc,
-        done: false,
-      },
-    ]);
-
-    setTitle("");
-    setDescription("");
+    try {
+      const response = await axios.post(
+        `${API_URL}/api/todo`,
+        {
+          title: trimmedTitle,
+          description: description.trim(),
+          isCompleted: false,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+      setTasks([...tasks, response.data]);
+      setTitle("");
+      setDescription("");
+    } catch (err) {
+      setError("Failed to add task");
+      console.error(err);
+    }
   };
 
-  const toggleDone = (id) => {
-    setTasks(tasks.map((t) => (t.id === id ? { ...t, done: !t.done } : t)));
+  const toggleDone = async (id) => {
+    const task = tasks.find((t) => t.id === id);
+    try {
+      const response = await axios.put(
+        `${API_URL}/api/todo/${id}`,
+        {
+          ...task,
+          isCompleted: !task.isCompleted,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+      setTasks(tasks.map((t) => (t.id === id ? response.data : t)));
+    } catch (err) {
+      setError("Failed to update task status");
+      console.error(err);
+    }
   };
 
-  const deleteTask = (id) => {
-    setTasks(tasks.filter((t) => t.id !== id));
+  const deleteTask = async (id) => {
+    try {
+      await axios.delete(`${API_URL}/api/todo/${id}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+      setTasks(tasks.filter((t) => t.id !== id));
+    } catch (err) {
+      setError("Failed to delete task");
+      console.error(err);
+    }
   };
+
+  if (loading) return <div>Loading tasks...</div>;
+  if (error) return <div style={{ color: "red" }}>{error}</div>;
 
   return (
     <Box className="tasks-container">
@@ -90,6 +176,7 @@ const Tasks = () => {
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             fullWidth
+            required
           />
           <TextField
             label="Description"
@@ -106,7 +193,7 @@ const Tasks = () => {
           {tasks.map((task) => (
             <ListItem key={task.id} alignItems="flex-start" sx={{ gap: 1 }}>
               <Checkbox
-                checked={task.done}
+                checked={task.isCompleted}
                 onChange={() => toggleDone(task.id)}
               />
 
@@ -122,6 +209,7 @@ const Tasks = () => {
                     }
                     size="small"
                     sx={{ mr: 1, width: "30%" }}
+                    required
                   />
                   <TextField
                     value={editValues.description}
@@ -139,10 +227,10 @@ const Tasks = () => {
                       onClick={() => saveEdit(task.id)}
                       color="primary"
                     >
-                      <AddIcon /> {/* Consider replacing with SaveIcon */}
+                      <SaveIcon />
                     </IconButton>
                     <IconButton onClick={cancelEdit} color="secondary">
-                      <DeleteIcon /> {/* Consider replacing with CancelIcon */}
+                      <CancelIcon />
                     </IconButton>
                   </Box>
                 </>
@@ -152,8 +240,10 @@ const Tasks = () => {
                     primary={
                       <Typography
                         sx={{
-                          color: task.done ? "gray" : "black",
-                          textDecoration: task.done ? "line-through" : "none",
+                          color: task.isCompleted ? "gray" : "black",
+                          textDecoration: task.isCompleted
+                            ? "line-through"
+                            : "none",
                           fontWeight: "bold",
                         }}
                       >
@@ -163,8 +253,10 @@ const Tasks = () => {
                     secondary={
                       <Typography
                         sx={{
-                          color: task.done ? "gray" : "black",
-                          textDecoration: task.done ? "line-through" : "none",
+                          color: task.isCompleted ? "gray" : "black",
+                          textDecoration: task.isCompleted
+                            ? "line-through"
+                            : "none",
                         }}
                       >
                         {task.description}
