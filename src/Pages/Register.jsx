@@ -21,19 +21,29 @@ const RegisterPage = () => {
     }
 
     try {
-      // RegisterPage.jsx
-      const response = await axios.post(`${API_URL}/api/auth/register`, {
-        username,
-        email,
-        password,
-      });
+      const response = await axios.post(
+        `${API_URL}/api/auth/register`,
+        { username, email, password },
+        {
+          headers: {
+            "Content-Type": "application/json", // Explicit content-type
+          },
+          // No withCredentials needed for JWT
+        }
+      );
 
-      localStorage.setItem("token", response.data.token);
+      // Only save token if your backend returns one on register
+      if (response.data.token) {
+        localStorage.setItem("token", response.data.token);
+      }
 
-      // On success, redirect to login page
-      navigate("/");
+      navigate("/"); // Redirect to login after registration
     } catch (err) {
-      setError(err.response?.data || "Registration failed. Please try again.");
+      setError(
+        err.response?.data?.message ||
+          err.response?.data ||
+          "Registration failed. Please try again."
+      );
     }
   };
 

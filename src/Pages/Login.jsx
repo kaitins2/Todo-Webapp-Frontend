@@ -21,7 +21,6 @@ const LoginPage = () => {
           headers: {
             "Content-Type": "application/json", // Explicitly set content-type
           },
-          withCredentials: true, // If using cookies/auth tokens
         }
       );
 
