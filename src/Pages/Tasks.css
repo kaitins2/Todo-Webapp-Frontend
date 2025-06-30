@@ -1,0 +1,67 @@
+.tasks-container {
+  display: flex;
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+  background: #f9f9f9;
+}
+
+.sidebar {
+  width: 200px;
+  background-color: #1e1e2f;
+  color: white;
+  padding: 1rem;
+}
+
+.sidebar h2 {
+  margin-bottom: 2rem;
+}
+
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+}
+
+.sidebar li {
+  margin: 1rem 0;
+  cursor: pointer;
+}
+
+.sidebar li:hover {
+  text-decoration: underline;
+}
+
+.main-content {
+  flex: 1;
+  padding: 2rem;
+}
+
+.add-task-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.tasks-container .MuiTextField-root {
+  flex: 1;
+}
+
+/* Hover effect for icon buttons */
+.MuiIconButton-root:hover {
+  border-radius: 10px;
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+/* Styling for done tasks */
+.done-text {
+  color: #888;
+  text-decoration: line-through;
+}
+
+/* Flex container for task action icons (edit/delete/save/cancel) */
+.task-actions {
+  display: flex;
+  gap: 0.5rem; /* space between icons */
+  align-items: center;
+}

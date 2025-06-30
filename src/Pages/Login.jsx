@@ -1,7 +1,7 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import axios from "axios";
-import "./Login.css";
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import './Login.css';
 
 const LoginPage = () => {
   const API_URL = import.meta.env.VITE_API_URL;
@@ -39,7 +39,7 @@ const LoginPage = () => {
     <div className="login-container">
       <form className="login-form" onSubmit={handleSubmit}>
         <h2>Login</h2>
-        {error && <p style={{ color: "red" }}>{error}</p>}
+        {error && <p style={{ color: 'red' }}>{error}</p>}
         <input
           type="text"
           placeholder="Username"
@@ -55,7 +55,7 @@ const LoginPage = () => {
           onChange={(e) => setPassword(e.target.value)}
         />
         <button type="submit">Login</button>
-        <button type="button" onClick={() => navigate("/register")}>
+        <button type="button" onClick={() => navigate('/register')}>
           Register
         </button>
       </form>

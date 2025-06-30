@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
+import React, { useState } from "react";
 import {
   Box,
   TextField,
@@ -16,112 +15,52 @@ import AddIcon from "@mui/icons-material/Add";
 import EditIcon from "@mui/icons-material/Edit";
 import "./Tasks.css";
 
-// Set your backend URL here
-const API_URL = "https://localhost:7240/api/todo";
-
 const Tasks = () => {
   const [tasks, setTasks] = useState([]);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [isEditing, setIsEditing] = useState(null);
+  const [isEditing, setIsEditing] = useState(null); // task.id or null
   const [editValues, setEditValues] = useState({ title: "", description: "" });
-
-  const token = localStorage.getItem("token");
-
-  // Create an axios instance with auth header
-  const axiosInstance = axios.create({
-    baseURL: API_URL,
-    headers: { Authorization: `Bearer ${token}` },
-  });
-
-  useEffect(() => {
-    fetchTasks();
-  }, []);
-
-  const fetchTasks = async () => {
-    try {
-      const response = await axiosInstance.get("/");
-      setTasks(response.data);
-    } catch (error) {
-      console.error("Failed to fetch tasks:", error);
-    }
-  };
-
-  const addTask = async () => {
-    const trimmedTitle = title.trim();
-    const trimmedDesc = description.trim();
-    if (!trimmedTitle && !trimmedDesc) return;
-
-    try {
-      const response = await axiosInstance.post("/", {
-        title: trimmedTitle,
-        description: trimmedDesc,
-      });
-      setTasks((prev) => [...prev, response.data]);
-      setTitle("");
-      setDescription("");
-    } catch (error) {
-      console.error("Failed to add task:", error);
-    }
-  };
-
-  const saveEdit = async (id) => {
-    try {
-      const taskToUpdate = tasks.find((t) => t.id === id);
-      const updatedTask = {
-        ...taskToUpdate,
-        title: editValues.title,
-        description: editValues.description,
-        isCompleted: taskToUpdate.isCompleted ?? false,
-      };
-
-      await axiosInstance.put(`/${id}`, updatedTask);
-
-      setTasks((prev) =>
-        prev.map((t) => (t.id === id ? { ...t, ...editValues } : t))
-      );
-      setIsEditing(null);
-    } catch (error) {
-      console.error("Failed to update task:", error);
-    }
-  };
-
-  const toggleDone = async (id) => {
-    try {
-      const taskToUpdate = tasks.find((t) => t.id === id);
-      const updatedTask = {
-        ...taskToUpdate,
-        isCompleted: !taskToUpdate.isCompleted,
-      };
-
-      await axiosInstance.put(`/${id}`, updatedTask);
-
-      setTasks((prev) =>
-        prev.map((t) =>
-          t.id === id ? { ...t, isCompleted: !t.isCompleted } : t
-        )
-      );
-    } catch (error) {
-      console.error("Failed to toggle task:", error);
-    }
-  };
-
-  const deleteTask = async (id) => {
-    try {
-      await axiosInstance.delete(`/${id}`);
-      setTasks((prev) => prev.filter((t) => t.id !== id));
-    } catch (error) {
-      console.error("Failed to delete task:", error);
-    }
-  };
 
   const startEdit = (task) => {
     setIsEditing(task.id);
     setEditValues({ title: task.title, description: task.description });
   };
 
+  const saveEdit = (id) => {
+    setTasks(tasks.map((t) => (t.id === id ? { ...t, ...editValues } : t)));
+    setIsEditing(null);
+  };
+
   const cancelEdit = () => {
     setIsEditing(null);
+  };
+
+  const addTask = () => {
+    const trimmedTitle = title.trim();
+    const trimmedDesc = description.trim();
+    if (!trimmedTitle && !trimmedDesc) return;
+
+    setTasks([
+      ...tasks,
+      {
+        id: Date.now(),
+        title: trimmedTitle,
+        description: trimmedDesc,
+        done: false,
+      },
+    ]);
+
+    setTitle("");
+    setDescription("");
+  };
+
+  const toggleDone = (id) => {
+    setTasks(tasks.map((t) => (t.id === id ? { ...t, done: !t.done } : t)));
+  };
+
+  const deleteTask = (id) => {
+    setTasks(tasks.filter((t) => t.id !== id));
   };
 
   return (
@@ -167,7 +106,7 @@ const Tasks = () => {
           {tasks.map((task) => (
             <ListItem key={task.id} alignItems="flex-start" sx={{ gap: 1 }}>
               <Checkbox
-                checked={!!task.isCompleted}
+                checked={task.done}
                 onChange={() => toggleDone(task.id)}
               />
 
@@ -200,10 +139,10 @@ const Tasks = () => {
                       onClick={() => saveEdit(task.id)}
                       color="primary"
                     >
-                      <AddIcon />
+                      <AddIcon /> {/* Consider replacing with SaveIcon */}
                     </IconButton>
                     <IconButton onClick={cancelEdit} color="secondary">
-                      <DeleteIcon />
+                      <DeleteIcon /> {/* Consider replacing with CancelIcon */}
                     </IconButton>
                   </Box>
                 </>
@@ -213,10 +152,8 @@ const Tasks = () => {
                     primary={
                       <Typography
                         sx={{
-                          color: task.isCompleted ? "gray" : "black",
-                          textDecoration: task.isCompleted
-                            ? "line-through"
-                            : "none",
+                          color: task.done ? "gray" : "black",
+                          textDecoration: task.done ? "line-through" : "none",
                           fontWeight: "bold",
                         }}
                       >
@@ -226,10 +163,8 @@ const Tasks = () => {
                     secondary={
                       <Typography
                         sx={{
-                          color: task.isCompleted ? "gray" : "black",
-                          textDecoration: task.isCompleted
-                            ? "line-through"
-                            : "none",
+                          color: task.done ? "gray" : "black",
+                          textDecoration: task.done ? "line-through" : "none",
                         }}
                       >
                         {task.description}
