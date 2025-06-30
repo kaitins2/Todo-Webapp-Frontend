@@ -15,35 +15,46 @@ const RegisterPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    // Client-side validation
     if (password !== confirmPassword) {
       setError("Passwords don't match");
+      return;
+    }
+
+    if (password.length < 8) {
+      setError("Password must be at least 8 characters");
       return;
     }
 
     try {
       const response = await axios.post(
         `${API_URL}/api/auth/register`,
-        { username, email, password },
         {
-          headers: {
-            "Content-Type": "application/json", // Explicit content-type
-          },
-          // No withCredentials needed for JWT
-        }
+          username: username.trim(),
+          email: email.trim().toLowerCase(),
+          password,
+        },
+        { headers: { "Content-Type": "application/json" } }
       );
 
-      // Only save token if your backend returns one on register
+      // Handle success
       if (response.data.token) {
         localStorage.setItem("token", response.data.token);
+        navigate("/dashboard");
+      } else {
+        navigate("/login?registered=true");
       }
-
-      navigate("/"); // Redirect to login after registration
     } catch (err) {
-      setError(
-        err.response?.data?.message ||
-          err.response?.data ||
-          "Registration failed. Please try again."
-      );
+      // Extract the first error message if multiple exist
+      const apiError = err.response?.data;
+      const errorMsg =
+        typeof apiError === "string"
+          ? apiError
+          : Array.isArray(apiError?.errors)
+          ? apiError.errors[0]
+          : apiError?.title || "Registration failed";
+
+      setError(errorMsg);
     }
   };
 
