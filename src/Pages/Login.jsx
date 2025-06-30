@@ -14,10 +14,16 @@ const LoginPage = () => {
     e.preventDefault();
 
     try {
-      const response = await axios.post(`${API_URL}/api/auth/login`, {
-        username,
-        password,
-      });
+      const response = await axios.post(
+        `${API_URL}/api/auth/login`,
+        { username, password },
+        {
+          headers: {
+            "Content-Type": "application/json", // Explicitly set content-type
+          },
+          withCredentials: true, // If using cookies/auth tokens
+        }
+      );
 
       // Save token if your backend returns one
       localStorage.setItem("token", response.data.token);
