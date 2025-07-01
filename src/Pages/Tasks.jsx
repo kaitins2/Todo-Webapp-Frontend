@@ -176,7 +176,18 @@ const Tasks = () => {
 
         <List>
           {tasks.map((task) => (
-            <ListItem key={task.id} alignItems="flex-start" sx={{ gap: 1 }}>
+            <ListItem
+              key={task.id}
+              alignItems="flex-start"
+              sx={{
+                gap: 1,
+                backgroundColor: "white",
+                borderRadius: 2,
+                boxShadow: 1,
+                mb: 1,
+                padding: 2,
+              }}
+            >
               <Checkbox
                 checked={task.isCompleted}
                 onChange={() => toggleDone(task.id)}
