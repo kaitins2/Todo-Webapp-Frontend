@@ -1,0 +1,72 @@
+/* Sidebar.css */
+
+.sidebar-container {
+  width: 250px;
+  height: 100vh;
+  background-color: transparent;
+  backdrop-filter: blur(15px);
+  display: flex;
+  flex-direction: column;
+}
+
+.tasks-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  box-sizing: border-box;
+}
+
+.sidebar h2 {
+  margin-bottom: 30px;
+  font-size: 24px;
+  font-weight: 600;
+  color: white;
+  text-align: center;
+}
+
+.sidebar nav {
+  flex-grow: 1;
+}
+
+.sidebar-menu {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.sidebar-menu li {
+  width: 100%;
+}
+
+.sidebar-menu button {
+  justify-content: flex-start;
+  text-transform: none;
+  font-size: 16px;
+  padding: 10px 12px;
+  border-radius: 6px;
+  transition: background-color 0.2s;
+  color: white;
+}
+
+.sidebar-menu button:hover {
+  background-color: #7a7a7a;
+}
+
+.sidebar-menu button.MuiButton-colorError {
+  background-color: transparent;
+  color: #fff;
+}
+
+.sidebar-menu button.MuiButton-colorError:hover {
+  background-color: #d32f2f;
+}

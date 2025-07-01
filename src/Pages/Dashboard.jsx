@@ -2,25 +2,12 @@
 import React from "react";
 import "./Dashboard.css";
 import { Link } from "react-router-dom";
+import Sidebar from "../assets/Components/Sidebar";
 
 const Dashboard = () => {
   return (
     <div className="dashboard-container">
-      <aside className="sidebar">
-        <h2>MyApp</h2>
-        <nav>
-          <ul>
-            <li>Home</li>
-            <li>
-              <Link to={"/tasks"}>Tasks</Link>
-            </li>
-            <li>Habits</li>
-            <li>Profile</li>
-            <li>Settings</li>
-            <li>Logout</li>
-          </ul>
-        </nav>
-      </aside>
+      <Sidebar />
       <main className="main-content">
         <h1 className="title">Welcome to the Dashboard</h1>
         <p className="title">

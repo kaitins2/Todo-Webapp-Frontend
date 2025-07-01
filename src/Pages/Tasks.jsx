@@ -17,6 +17,7 @@ import SaveIcon from "@mui/icons-material/Save";
 import CancelIcon from "@mui/icons-material/Cancel";
 import "./Tasks.css";
 import axios from "axios";
+import Sidebar from "../assets/Components/Sidebar";
 
 const Tasks = () => {
   const API_URL = import.meta.env.VITE_API_URL;
@@ -151,25 +152,9 @@ const Tasks = () => {
 
   return (
     <Box className="tasks-container">
-      <aside className="sidebar">
-        <h2>MyApp</h2>
-        <nav>
-          <ul>
-            <li>Home</li>
-            <li>
-              <Link to="/tasks">Tasks</Link>
-            </li>
-            <li>Habits</li>
-            <li>Profile</li>
-            <li>Settings</li>
-            <li>Logout</li>
-          </ul>
-        </nav>
-      </aside>
-
+      <Sidebar />
       <main className="main-content">
         <h1 className="title">My Tasks</h1>
-
         <Box className="add-task-form">
           <TextField
             label="Task Title"
