@@ -22,12 +22,6 @@ const Sidebar = () => {
               </Button>
             </li>
             <li>
-              <Button fullWidth>Habits</Button>
-            </li>
-            <li>
-              <Button fullWidth>Profile</Button>
-            </li>
-            <li>
               <Button fullWidth>Settings</Button>
             </li>
             <li>
